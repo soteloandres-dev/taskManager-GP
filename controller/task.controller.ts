@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
-import taskCreateService from '../services/taskCreate.service'
 import { CreateTaskInput } from '../types/task'
 import { createTaskSchema } from '../schemas/createTask.schema'
+import createTaskService from '../services/taskCreate.service'
 
 async function createTaskController(req: Request, res: Response) {
 
@@ -21,8 +21,10 @@ async function createTaskController(req: Request, res: Response) {
         userId
     }
 
-    const taskCreated = await taskCreateService.taskCreate(task)
+    const taskCreated = await createTaskService(task)
 
     return res.status(201).json(taskCreated)
 
 }
+
+export default createTaskController
