@@ -1,7 +1,9 @@
 // usamos los tipos de express para la req, res y next
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response } from 'express';
 // La logica sera configurar todo y luego levantar: configuracion - middleware - routes(endpoints) - errors handler y levantar
 
+// el router de task
+import taskRouter from './routes/task.route';
 
 const app = express();
 const PORT = 3000;
@@ -12,7 +14,11 @@ app.get('/', (req: Request, res: Response) => {
     res.send('Task Manager App testing Good Practice');
 })
 
+app.use('/tasks', taskRouter); // usar el router con un prefijo /tasks
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
+
 

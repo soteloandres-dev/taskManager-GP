@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from 'express';
 import { AuthJwtPayload } from "../types/auth"
 
-function authMiddleware(req: Request, res: Response, next: NextFunction) {
+export function authMiddleware(req: Request, res: Response, next: NextFunction) {
     // let token: string = ''
 
     // if (req.headers.authorization) {

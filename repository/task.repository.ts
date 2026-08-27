@@ -6,9 +6,9 @@ const taskList: Task[] = []
 async function createTaskRepository(task: CreateTaskRepositoryInput): Promise<Task> {
 
     const id = randomUUID()
-    const dataTask: Task = { id, ...task }
-    taskList.push(dataTask)
-    return dataTask
+    const newTask: Task = { id, ...task }
+    taskList.push(newTask)
+    return newTask
 }
 
 export default createTaskRepository
