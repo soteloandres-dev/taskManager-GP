@@ -1,7 +1,7 @@
-import { Request, Response } from 'express'
-import { CreateTaskInput } from '../types/task'
-import { createTaskSchema } from '../schemas/createTask.schema'
-import createTaskService from '../services/taskCreate.service'
+import type { Request, Response } from 'express'
+import type { CreateTaskInput } from '../types/task.ts'
+import { createTaskSchema } from '../schemas/createTask.schema.ts'
+import { createTaskService, getAllTasksService } from '../services/task.service.ts'
 
 export async function createTaskController(req: Request, res: Response) {
 
@@ -30,5 +30,10 @@ export async function getTasksController(req: Request, res: Response) {
     // no hay chequeo de esquema
 
     // llamamos al service que trae las tareas
+    const userId = req.user.id
+    const listTasks = await getAllTasksService(userId)
+
+    if (listTasks.length === 0) res.status(200).json({ message: 'Not found tasks' })
+    return res.status(200).json(listTasks)
 
 }

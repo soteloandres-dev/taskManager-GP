@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import { Request, Response, NextFunction } from 'express';
-import { AuthJwtPayload } from "../types/auth"
+import type { Request, Response, NextFunction } from 'express';
+import type { AuthJwtPayload } from "../types/auth.ts"
 
 export function authMiddleware(req: Request, res: Response, next: NextFunction) {
     // let token: string = ''
@@ -17,12 +17,13 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
     // HACERLO DE MODO MAS DECLARATIVO
     const authorization = req.headers.authorization
 
+    console.log('auth', authorization)
     if (!authorization) {
         return res.status(401).json({ message: 'Need Login' })
     }
 
     const parts = authorization.split(' ')
-
+    console.log('parts', parts)
     if (parts[0] !== 'Bearer' || !parts[1]) {
         return res.status(401).json({ message: 'Invalid Token' })
     }
@@ -35,7 +36,8 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
     }
 
     try {
-        // aqui le agregamos el tipo para cuando termina de hacer el verify 
+        // aqui le agregamos el tipo para cuando termina de hacer el verify
+        console.log
         const payload = jwt.verify(token, process.env.SECRET_KEY as string) as AuthJwtPayload
 
         // para solucionar el tema del tipo para la Request y agregarle user vamos a crear un archivo en /types
