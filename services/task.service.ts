@@ -1,4 +1,4 @@
-import { createTaskRepository, getAllTasksRepository } from "../repository/task.repository.ts";
+import { createTaskRepository, getAllTasksRepository, getTaskByIdRepository } from "../repository/task.repository.ts";
 import type { CreateTaskInput, Task, CreateTaskRepositoryInput } from "../types/task.ts";
 
 export async function createTaskService(taskInput: CreateTaskInput): Promise<Task> {
@@ -13,4 +13,8 @@ export async function createTaskService(taskInput: CreateTaskInput): Promise<Tas
 export async function getAllTasksService(userId: string): Promise<Task[]> {
 
     return await getAllTasksRepository(userId)
+}
+
+export async function getTaskByIdService(userId: string, taskId: string): Promise<Task | undefined> {
+    return await getTaskByIdRepository(userId, taskId)
 }

@@ -19,3 +19,8 @@ export async function getAllTasksRepository(userId: string): Promise<Task[]> {
     // mas simple y semantico, como no se hara nada despues con listTaskByUser, solo la retornamos
     return taskList.filter(task => task.userId === userId)
 }
+
+export async function getTaskByIdRepository(userId: string, taskId: string): Promise<Task | undefined> {
+    // puede no existir la tarea
+    return taskList.find(task => task.userId === userId && task.id === taskId)
+}
