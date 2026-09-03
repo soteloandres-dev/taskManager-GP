@@ -1,5 +1,5 @@
 import { createTaskRepository, getAllTasksRepository, getTaskByIdRepository, updateTaskRepository } from "../repository/task.repository.ts";
-import type { CreateTaskInput, Task, CreateTaskRepositoryInput, UpdateTaskInput } from "../types/task.ts";
+import type { CreateTaskInput, Task, CreateTaskRepositoryInput, UpdateTaskInput, UpdateTaskRepositoryInput } from "../types/task.ts";
 
 export async function createTaskService(taskInput: CreateTaskInput): Promise<Task> {
     const taskRepositoryInput: CreateTaskRepositoryInput = {
@@ -21,17 +21,23 @@ export async function getTaskByIdService(userId: string, taskId: string): Promis
 
 export async function updateTaskService(userId: string, taskId: string, taskInput: UpdateTaskInput): Promise<Task | undefined> {
 
+    // verifica existencia de la tarea
+    const taskExist = await getTaskByIdRepository(userId, taskId)
 
-    if (taskInput.completed) {
-        console.log('registro la fecha de complete')
-        const completedTask = { ...taskInput, completedAt: new Date() }
-        console.log(completedTask)
+    if (!taskExist) {
+        return undefined
+    }
+    let updateTask: UpdateTaskRepositoryInput = { ...taskInput }
 
-    } else {
-        const incompletedTask = { ...taskInput, completedAt: undefined }
-        console.log(incompletedTask)
+    if (taskExist.completed === false) {
+        if (taskInput.completed === true) {
+            updateTask = { ...updateTask, completedAt: new Date() }
+        }
+    } else if (taskExist.completed === true) {
+        if (taskInput.completed === false) {
+            updateTask = { ...updateTask, completedAt: undefined } // se desmarcó de completada!
+        }
     }
 
-
-    return updateTaskRepository(userId, taskId, taskInput)
+    return updateTaskRepository(userId, taskId, updateTask)
 }

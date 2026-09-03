@@ -26,3 +26,7 @@ export interface UpdateTaskInput {
     description?: string,
     completed?: boolean
 }
+
+export interface UpdateTaskRepositoryInput extends UpdateTaskInput {
+    completedAt?: Date
+}
