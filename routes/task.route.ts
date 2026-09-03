@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createTaskController, getTaskByIdController, getTasksController } from "../controller/task.controller.ts"
+import { createTaskController, getTaskByIdController, getTasksController, updateTaskController } from "../controller/task.controller.ts"
 import { authMiddleware } from "../middleware/auth.middleware.ts";
 
 export const taskRouter = Router()
@@ -12,3 +12,5 @@ taskRouter.post('/', authMiddleware, createTaskController)
 
 // nombre de param debe extraerse igual en controller
 taskRouter.get('/:taskId', authMiddleware, getTaskByIdController)
+
+taskRouter.patch('/:taskId', authMiddleware, updateTaskController)

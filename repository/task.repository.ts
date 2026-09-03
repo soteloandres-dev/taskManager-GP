@@ -1,4 +1,4 @@
-import type { CreateTaskRepositoryInput, Task } from "../types/task.ts";
+import type { CreateTaskRepositoryInput, Task, UpdateTaskInput } from "../types/task.ts";
 import { randomUUID } from 'node:crypto'
 
 const taskList: Task[] = []
@@ -23,4 +23,13 @@ export async function getAllTasksRepository(userId: string): Promise<Task[]> {
 export async function getTaskByIdRepository(userId: string, taskId: string): Promise<Task | undefined> {
     // puede no existir la tarea
     return taskList.find(task => task.userId === userId && task.id === taskId)
+}
+
+export async function updateTaskRepository(userId: string, taskId: string, taskInput: UpdateTaskInput): Promise<Task | undefined> {
+    const task = taskList.find(task => task.userId === userId && task.id === taskId)
+    console.log(task, taskInput)
+
+
+
+    return undefined
 }

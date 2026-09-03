@@ -19,3 +19,10 @@ export interface Task {
 // reusamos Task, esto es lo que recibe el repository para hacer la persistencia
 // accion + entidad + quien recibe + naturaleza del dato (en este caso es un input para repository)
 export type CreateTaskRepositoryInput = Omit<Task, 'id'>
+
+
+export interface UpdateTaskInput {
+    title?: string,
+    description?: string,
+    completed?: boolean
+}
