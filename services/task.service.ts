@@ -1,4 +1,4 @@
-import { createTaskRepository, getAllTasksRepository, getTaskByIdRepository, updateTaskRepository } from "../repository/task.repository.ts";
+import { createTaskRepository, deleteTaskRepository, getAllTasksRepository, getTaskByIdRepository, updateTaskRepository } from "../repository/task.repository.ts";
 import type { CreateTaskInput, Task, CreateTaskRepositoryInput, UpdateTaskInput, UpdateTaskRepositoryInput } from "../types/task.ts";
 
 export async function createTaskService(taskInput: CreateTaskInput): Promise<Task> {
@@ -19,8 +19,8 @@ export async function getTaskByIdService(userId: string, taskId: string): Promis
     return getTaskByIdRepository(userId, taskId)
 }
 
-export async function updateTaskService(userId: string, taskId: string, taskInput: UpdateTaskInput): Promise<Task | undefined> {
 
+export async function updateTaskService(userId: string, taskId: string, taskInput: UpdateTaskInput): Promise<Task | undefined> {
     // verifica existencia de la tarea
     const taskExist = await getTaskByIdRepository(userId, taskId)
 
@@ -38,6 +38,11 @@ export async function updateTaskService(userId: string, taskId: string, taskInpu
             updateTask = { ...updateTask, completedAt: undefined } // se desmarcó de completada!
         }
     }
-
     return updateTaskRepository(userId, taskId, updateTask)
+}
+
+
+export async function deleteTaskService(userId: string, taskId: string): Promise<Task | undefined> {
+
+    return deleteTaskRepository(userId, taskId)
 }

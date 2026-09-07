@@ -4,6 +4,7 @@ import express, { type Request, type Response } from 'express';
 
 // el router de task
 import { taskRouter } from './routes/task.route.ts';
+import { errorMiddleware } from './middleware/error.middleware.ts';
 
 const app = express();
 const PORT = 3000;
@@ -15,6 +16,10 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/tasks', taskRouter); // usar el router con un prefijo /tasks
+// app.get('/test-error', (req, res) => {
+//     throw new Error('Error de prueba')
+// })
+app.use(errorMiddleware)
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

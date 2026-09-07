@@ -17,13 +17,11 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
     // HACERLO DE MODO MAS DECLARATIVO
     const authorization = req.headers.authorization
 
-    console.log('auth', authorization)
     if (!authorization) {
         return res.status(401).json({ message: 'Need Login' })
     }
 
     const parts = authorization.split(' ')
-    console.log('parts', parts)
     if (parts[0] !== 'Bearer' || !parts[1]) {
         return res.status(401).json({ message: 'Invalid Token' })
     }

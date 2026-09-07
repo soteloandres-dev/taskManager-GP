@@ -6,4 +6,8 @@ export const updateTaskSchema = z.object({
     completed: z.boolean().optional()
 }).refine((obj) => Object.keys(obj).length > 0, {
     message: "Debe tener al menos un campo modificado",
-})
+}).strict()
+
+export type UpdateTaskBody = z.infer<typeof updateTaskSchema>
+
+export type UpdateTaskInput = UpdateTaskBody & { completed: boolean }

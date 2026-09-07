@@ -35,3 +35,12 @@ export async function updateTaskRepository(userId: string, taskId: string, taskI
 
     return updateTask
 }
+
+export async function deleteTaskRepository(userId: string, taskId: string): Promise<Task | undefined> {
+
+    const index = taskList.findIndex(task => task.id === taskId && task.userId === userId)
+    if (index === -1) return undefined
+    const deletedTask = taskList[index]
+    taskList.splice(index, 1)
+    return deletedTask
+}
