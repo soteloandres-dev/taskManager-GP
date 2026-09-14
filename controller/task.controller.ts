@@ -1,23 +1,29 @@
 import type { Request, Response } from 'express'
-import type { CreateTaskInput, UpdateTaskInput } from '../types/task.ts'
-import { createTaskSchema } from '../schemas/createTask.schema.ts'
+import type { CreateTaskInput } from '../types/task.ts'
+// import { createTaskSchema } from '../schemas/createTask.schema.ts'
 import { createTaskService, deleteTaskService, getAllTasksService, getTaskByIdService, updateTaskService } from '../services/task.service.ts'
-import { taskIdSchema } from '../schemas/taskId.schema.ts'
-import { updateTaskSchema } from '../schemas/updateTask.schema.ts'
+// import { taskIdSchema } from '../schemas/taskId.schema.ts'
+import type { UpdateTaskBody } from '../schemas/updateTask.schema.ts'
+import type { CreateTaskLocals } from '../types/task.locals.ts'
 
-export async function createTaskController(req: Request, res: Response) {
+export async function createTaskController(req: Request, res: Response<unknown, CreateTaskLocals>) {
     // uso del esquema de zod
     // const checkData = createTaskSchema.safeParse(req.body)
     // if (!checkData.success) {
     //     return res.status(400).json({ message: 'Invalid Schema' })
     // }
     // const { title, description } = checkData.data
-    const { title, description } = res.locals.validatedData.body
+    // const { title, description } = res.locals.validatedData.body
     const userId = req.user.id
 
+    // const task: CreateTaskInput = {
+    //     title,
+    //     description,
+    //     userId
+    // }
+
     const task: CreateTaskInput = {
-        title,
-        description,
+        ...res.locals.validatedData.body,
         userId
     }
 
@@ -61,8 +67,7 @@ export async function updateTaskController(req: Request, res: Response) {
 
     // const validateBody = updateTaskSchema.safeParse(req.body)
     // if (!validateBody.success) return res.status(400).json({ message: 'Information is not valid' })
-    const taskBody = res.locals.validatedData.body
-
+    const taskBody: UpdateTaskBody = res.locals.validatedData.body
     const userId = req.user.id
 
     // const validateTaskId = taskIdSchema.safeParse(req.params)

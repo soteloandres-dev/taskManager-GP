@@ -1,5 +1,6 @@
 import { createTaskRepository, deleteTaskRepository, getAllTasksRepository, getTaskByIdRepository, updateTaskRepository } from "../repository/task.repository.ts";
-import type { CreateTaskInput, Task, CreateTaskRepositoryInput, UpdateTaskInput, UpdateTaskRepositoryInput } from "../types/task.ts";
+import type { CreateTaskInput, Task, CreateTaskRepositoryInput } from "../types/task.ts";
+import type { UpdateTaskBody, UpdateTaskRepositoryInput } from "../schemas/updateTask.schema.ts";
 
 export async function createTaskService(taskInput: CreateTaskInput): Promise<Task> {
     const taskRepositoryInput: CreateTaskRepositoryInput = {
@@ -20,7 +21,7 @@ export async function getTaskByIdService(userId: string, taskId: string): Promis
 }
 
 
-export async function updateTaskService(userId: string, taskId: string, taskInput: UpdateTaskInput): Promise<Task | undefined> {
+export async function updateTaskService(userId: string, taskId: string, taskInput: UpdateTaskBody): Promise<Task | undefined> {
     // verifica existencia de la tarea
     const taskExist = await getTaskByIdRepository(userId, taskId)
 

@@ -1,4 +1,5 @@
-import type { CreateTaskRepositoryInput, Task, UpdateTaskRepositoryInput } from "../types/task.ts";
+import type { CreateTaskRepositoryInput, Task } from "../types/task.ts";
+import type { UpdateTaskRepositoryInput } from "../schemas/updateTask.schema.ts";
 import { randomUUID } from 'node:crypto'
 
 const taskList: Task[] = []
@@ -30,7 +31,11 @@ export async function updateTaskRepository(userId: string, taskId: string, taskI
     // lo haremos de forma inmutable y reemplazando solo el objeto afectado
     const index = taskList.findIndex(task => task.id === taskId && task.userId === userId)
     if (index === -1) return undefined
-    const updateTask = { ...taskList[index], ...taskInput } // reemplazamos valores que hayan enviado
+
+    const foundTask = taskList[index]
+    if (!foundTask) return undefined
+    const updateTask: Task = { ...foundTask, ...taskInput } // reemplazamos valores que hayan enviado
+
     taskList[index] = updateTask
 
     return updateTask

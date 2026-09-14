@@ -10,4 +10,4 @@ export const updateTaskSchema = z.object({
 
 export type UpdateTaskBody = z.infer<typeof updateTaskSchema>
 
-export type UpdateTaskInput = UpdateTaskBody & { completed: boolean }
+export type UpdateTaskRepositoryInput = UpdateTaskBody & { completedAt?: Date | undefined }

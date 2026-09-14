@@ -21,12 +21,12 @@ export interface Task {
 export type CreateTaskRepositoryInput = Omit<Task, 'id'>
 
 
-export interface UpdateTaskInput {
-    title?: string,
-    description?: string,
-    completed?: boolean
-}
+// export interface UpdateTaskInput {
+//     title?: string,
+//     description?: string,
+//     completed?: boolean
+// }
 
-export interface UpdateTaskRepositoryInput extends UpdateTaskInput {
-    completedAt?: Date
-}
+// export interface UpdateTaskRepositoryInput extends UpdateTaskInput {
+//     completedAt?: Date
+// }
