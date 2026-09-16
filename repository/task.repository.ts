@@ -49,3 +49,8 @@ export async function deleteTaskRepository(userId: string, taskId: string): Prom
     taskList.splice(index, 1)
     return deletedTask
 }
+
+// para pruebas unitarias
+export function cleanRepository(): void {
+    taskList.length = 0
+}

@@ -39,7 +39,7 @@ export async function getTasksController(req: Request, res: Response) {
     const userId = req.user.id
     const listTasks = await getAllTasksService(userId)
 
-    if (listTasks.length === 0) res.status(200).json({ message: 'Not found tasks' })
+    // if (listTasks.length === 0) return res.status(200).json({ message: 'Not found tasks' }) // rompia contrato para prueba
     return res.status(200).json(listTasks)
 
 }
@@ -47,7 +47,6 @@ export async function getTasksController(req: Request, res: Response) {
 export async function getTaskByIdController(req: Request, res: Response) {
     // lo obtenemos en el paso de auth
     const userId = req.user.id
-    console.log(userId)
     // usamos un esquema para validar el formato del id de la task
     //const checkData = taskIdSchema.safeParse(req.params) // usamo middleware de esquema
 
@@ -56,7 +55,6 @@ export async function getTaskByIdController(req: Request, res: Response) {
     //     return res.status(400).json({ message: 'Task Id is not valid' })
     // }
     const { taskId } = res.locals.validatedData.params
-    console.log(taskId)
     const task = await getTaskByIdService(userId, taskId) // ya nos aseguramos que taskId tiene el formato uuid
 
     if (!task) return res.status(404).json({ message: 'Task not found' })
