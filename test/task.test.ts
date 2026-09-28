@@ -177,3 +177,137 @@ test('PATCH /tasks modifica el titulo y mantiene los otros datos', async () => {
     assert.equal(updateTitleResponse.body.createdAt, createTaskResponse.body.createdAt)
     assert.equal(updateTitleResponse.body.userId, TEST_USER_ID)
 })
+
+test('PATCH /tasks validar que tarea comienza incompleta y se completa', async () => {
+    const response = await request(app)
+        .post('/tasks')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ title: 'Prueba estado', description: 'Description test' })
+
+    const taskId = response.body.id
+    const originalTitle = response.body.title
+    assert.equal(response.status, 201)
+    assert.equal(response.body.completed, false)
+    assert.equal(response.body.title, 'Prueba estado')
+
+    const updateTaskResponse = await request(app)
+        .patch(`/tasks/${taskId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ completed: true })
+
+    assert.equal(updateTaskResponse.status, 200)
+    assert.equal(updateTaskResponse.body.completed, true)
+    assert.equal(updateTaskResponse.body.title, originalTitle)
+    assert.equal(updateTaskResponse.body.description, response.body.description)
+    assert.equal(updateTaskResponse.body.id, taskId)
+    assert.ok(typeof updateTaskResponse.body.completedAt === 'string')
+    assert.ok(updateTaskResponse.body.completedAt.length > 0)
+    assert.equal(updateTaskResponse.body.createdAt, response.body.createdAt)
+})
+
+test('PATCH /tasks marcar incompleta una tarea', async () => {
+    const response = await request(app)
+        .post('/tasks')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ title: 'Prueba estado tarea', description: 'Description test' })
+
+    const taskId = response.body.id
+    const originalTitle = response.body.title
+    assert.equal(response.status, 201)
+    assert.equal(response.body.completed, false)
+    assert.equal(response.body.title, 'Prueba estado tarea')
+
+    const updateCompletedTaskResponse = await request(app)
+        .patch(`/tasks/${taskId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ completed: true })
+
+    assert.equal(updateCompletedTaskResponse.status, 200)
+    assert.equal(updateCompletedTaskResponse.body.completed, true)
+    assert.equal(updateCompletedTaskResponse.body.title, originalTitle)
+    assert.equal(updateCompletedTaskResponse.body.description, response.body.description)
+    assert.equal(updateCompletedTaskResponse.body.id, taskId)
+    assert.ok(typeof updateCompletedTaskResponse.body.completedAt === 'string')
+    assert.ok(updateCompletedTaskResponse.body.completedAt.length > 0)
+    assert.equal(updateCompletedTaskResponse.body.createdAt, response.body.createdAt)
+
+    const markIncompletedTaskResponse = await request(app)
+        .patch(`/tasks/${taskId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ completed: false })
+
+    assert.equal(markIncompletedTaskResponse.status, 200)
+    assert.equal(markIncompletedTaskResponse.body.completed, false)
+    assert.equal(markIncompletedTaskResponse.body.title, originalTitle)
+    assert.equal(markIncompletedTaskResponse.body.description, response.body.description)
+    assert.equal(markIncompletedTaskResponse.body.id, taskId)
+    assert.equal(markIncompletedTaskResponse.body.createdAt, response.body.createdAt)
+    // que ya no esta completedAt porque esta desmarcada
+    assert.equal('completedAt' in markIncompletedTaskResponse.body, false)
+})
+
+
+test('PATCH /tasks marcar completa una tarea ya completa', async () => {
+    const response = await request(app)
+        .post('/tasks')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ title: 'Prueba estado', description: 'Description test' })
+
+    const taskId = response.body.id
+    const originalTitle = response.body.title
+    assert.equal(response.status, 201)
+    assert.equal(response.body.completed, false)
+    assert.equal(response.body.title, 'Prueba estado')
+
+    const markCompletedTaskResponse = await request(app)
+        .patch(`/tasks/${taskId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ completed: true })
+
+    assert.equal(markCompletedTaskResponse.status, 200)
+    assert.equal(markCompletedTaskResponse.body.completed, true)
+    assert.equal(markCompletedTaskResponse.body.title, originalTitle)
+    assert.equal(markCompletedTaskResponse.body.description, response.body.description)
+    assert.equal(markCompletedTaskResponse.body.id, taskId)
+    assert.ok(typeof markCompletedTaskResponse.body.completedAt === 'string')
+    assert.ok(markCompletedTaskResponse.body.completedAt.length > 0)
+    assert.equal(markCompletedTaskResponse.body.createdAt, response.body.createdAt)
+    const reMarkCompletedTaskResponse = await request(app)
+        .patch(`/tasks/${taskId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ completed: true })
+
+    assert.equal(reMarkCompletedTaskResponse.status, 200)
+    assert.equal(reMarkCompletedTaskResponse.body.completed, true)
+    assert.equal(reMarkCompletedTaskResponse.body.title, originalTitle)
+    assert.equal(reMarkCompletedTaskResponse.body.description, response.body.description)
+    assert.equal(reMarkCompletedTaskResponse.body.id, taskId)
+    assert.ok(typeof reMarkCompletedTaskResponse.body.completedAt === 'string')
+    assert.ok(reMarkCompletedTaskResponse.body.completedAt.length > 0)
+    assert.equal(reMarkCompletedTaskResponse.body.createdAt, response.body.createdAt)
+
+    assert.equal(reMarkCompletedTaskResponse.body.completedAt, markCompletedTaskResponse.body.completedAt)
+})
+
+test('DELETE /tasks eliminar una tarea', async () => {
+    const response = await request(app)
+        .post('/tasks')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ title: 'Prueba estado', description: 'Description test' })
+
+    const taskId = response.body.id
+    assert.equal(response.status, 201)
+    assert.equal(response.body.title, 'Prueba estado')
+
+    const deleteTaskResponse = await request(app)
+        .delete(`/tasks/${taskId}`)
+        .set('Authorization', `Bearer ${token}`)
+
+    assert.equal(deleteTaskResponse.status, 200)
+    assert.equal(deleteTaskResponse.body.id, taskId)
+
+    const getDeletedTaskResponse = await request(app).get(`/tasks/${taskId}`).set('Authorization', `Bearer ${token}`)
+
+    assert.equal(getDeletedTaskResponse.status, 404)
+    assert.equal(getDeletedTaskResponse.body.message, 'Task not found')
+})
