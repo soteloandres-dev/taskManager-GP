@@ -1,0 +1,9 @@
+ CREATE TABLE IF NOT EXISTS tasks (
+    id UUID PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    user_id TEXT NOT NULL,
+    description TEXT,
+    completed BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    completed_at TIMESTAMPTZ
+);

@@ -1,15 +1,34 @@
 import type { CreateTaskRepositoryInput, Task } from "../types/task.ts";
 import type { UpdateTaskRepositoryInput } from "../schemas/updateTask.schema.ts";
 import { randomUUID } from 'node:crypto'
+import pool from "../config/db.ts";
 
 const taskList: Task[] = []
 
 export async function createTaskRepository(task: CreateTaskRepositoryInput): Promise<Task> {
 
     const id = randomUUID()
-    const newTask: Task = { id, ...task }
-    taskList.push(newTask)
-    return newTask
+    // agregamos el tipo que devolverá la query
+    const result = await pool.query<Task>(
+        `INSERT INTO tasks (id, title, description, user_id, completed, created_at, completed_at)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING id,
+                title,
+                description,
+                user_id AS "userId",
+                completed,
+                created_at AS "createdAt",
+                completed_at AS "completedAt"
+        `,
+        [id, task.title, task.description ?? null, task.userId, task.completed, task.createdAt, task.completedAt ?? null])
+
+    const createdTask = result.rows[0]
+
+    if (!createdTask) {
+        throw new Error('Task could not be created')
+    }
+
+    return createdTask
 }
 
 export async function getAllTasksRepository(userId: string): Promise<Task[]> {
